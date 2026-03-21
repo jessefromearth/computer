@@ -62,3 +62,39 @@ func Benchmark_Not(b *testing.B) {
 		Not(inputs[i%2])
 	}
 }
+
+func Test_And(t *testing.T) {
+	scenarios := []struct {
+		a        bool
+		b        bool
+		expected bool
+	}{
+		{true, true, true},
+		{true, false, false},
+		{false, true, false},
+		{false, false, false},
+	}
+
+	for _, s := range scenarios {
+		result := And(s.a, s.b)
+		if result != s.expected {
+			t.Errorf("And(%v, %v) returned %v but was expecting %v", s.a, s.b, result, s.expected)
+		}
+	}
+}
+
+func Benchmark_And(b *testing.B) {
+	inputs := []struct {
+		a bool
+		b bool
+	}{
+		{true, true},
+		{true, false},
+		{false, true},
+		{false, false},
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		And(inputs[i%4].a, inputs[i%4].b)
+	}
+}
