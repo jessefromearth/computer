@@ -98,3 +98,38 @@ func Benchmark_And(b *testing.B) {
 		And(inputs[i%4].a, inputs[i%4].b)
 	}
 }
+
+func Test_Or(t *testing.T) {
+	scenarios := []struct {
+		a        bool
+		b        bool
+		expected bool
+	}{
+		{true, true, true},
+		{true, false, true},
+		{false, true, true},
+		{false, false, false},
+	}
+	for _, s := range scenarios {
+		result := Or(s.a, s.b)
+		if result != s.expected {
+			t.Errorf("Or(%v, %v) returned %v but expected %v", s.a, s.b, result, s.expected)
+		}
+	}
+}
+
+func Benchmark_Or(b *testing.B) {
+	inputs := []struct {
+		a bool
+		b bool
+	}{
+		{true, true},
+		{true, false},
+		{false, true},
+		{false, false},
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		Or(inputs[i%4].a, inputs[i%4].b)
+	}
+}
