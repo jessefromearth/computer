@@ -22,3 +22,8 @@ func And(x, y bool) bool {
 func Or(x, y bool) bool {
 	return Nand(Nand(x, x), Nand(y, y))
 }
+
+// Xor is an implementation of the boolean Xor gate. It will return true if x and y are different, otherwise false if they are the same.
+func Xor(x, y bool) bool {
+	return Nand(Nand(x, Not(y)), Nand(Not(x), y))
+}

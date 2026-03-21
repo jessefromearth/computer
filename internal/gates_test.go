@@ -133,3 +133,38 @@ func Benchmark_Or(b *testing.B) {
 		Or(inputs[i%4].a, inputs[i%4].b)
 	}
 }
+
+func Test_Xor(t *testing.T) {
+	scenarios := []struct {
+		a        bool
+		b        bool
+		expected bool
+	}{
+		{true, true, false},
+		{true, false, true},
+		{false, true, true},
+		{false, false, false},
+	}
+	for _, s := range scenarios {
+		result := Xor(s.a, s.b)
+		if result != s.expected {
+			t.Errorf("Xor(%v, %v) returned %v but expected %v", s.a, s.b, result, s.expected)
+		}
+	}
+}
+
+func Benchmark_Xor(b *testing.B) {
+	inputs := []struct {
+		a bool
+		b bool
+	}{
+		{true, true},
+		{true, false},
+		{false, true},
+		{false, false},
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		Xor(inputs[i%4].a, inputs[i%4].b)
+	}
+}
