@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -166,5 +167,59 @@ func Benchmark_Xor(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		Xor(inputs[i%4].a, inputs[i%4].b)
+	}
+}
+
+func Test_TwoWayMux(t *testing.T) {
+	scenarios := []struct {
+		x        uint8
+		y        uint8
+		sel      uint8
+		expected uint8
+	}{
+		{1, 1, 1, 1},
+		{0, 1, 0, 0},
+		{1, 0, 1, 0},
+		{0, 0, 1, 0},
+	}
+	for _, s := range scenarios {
+		result := TwoWayMux(s.x, s.y, s.sel)
+		if result != s.expected {
+			t.Errorf("TwoWayMux(%v, %v, %v) returned %v but expected %v", s.x, s.y, s.sel, result, s.expected)
+		}
+	}
+}
+
+func Test_MultiBitMux(t *testing.T) {
+	scenarios := []struct {
+		x        []uint8
+		y        []uint8
+		sel      uint8
+		expected []uint8
+	}{
+		{
+			x:        []uint8{0, 1, 1, 0},
+			y:        []uint8{1, 0, 0, 1},
+			sel:      0,
+			expected: []uint8{0, 1, 1, 0},
+		},
+		{
+			x:        []uint8{0, 1, 1, 0},
+			y:        []uint8{1, 0, 0, 1},
+			sel:      1,
+			expected: []uint8{1, 0, 0, 1},
+		},
+		{
+			x:        []uint8{0, 1, 1, 0},
+			y:        []uint8{1, 0, 0, 1, 1},
+			sel:      1,
+			expected: []uint8{0, 0, 0, 0},
+		},
+	}
+	for _, s := range scenarios {
+		result := MultiBitMux(s.x, s.y, s.sel)
+		if slices.Compare(result, s.expected) != 0 {
+			t.Errorf("MultiBitMux(%v, %v) returned %v but expected %v", s.x, s.y, result, s.expected)
+		}
 	}
 }

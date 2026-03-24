@@ -27,3 +27,22 @@ func Or(x, y uint8) uint8 {
 func Xor(x, y uint8) uint8 {
 	return Nand(Nand(x, Not(y)), Nand(Not(x), y))
 }
+
+// TwoWayMux is an implementation of a 2-way multiplexer. It will return x if the selector is 0, and y if 1.
+func TwoWayMux(x, y, sel uint8) uint8 {
+	// Or(And(x, Not(sel)), And(y, sel))
+	return Nand(Nand(x, Nand(sel, sel)), Nand(sel, y))
+}
+
+// MultiBitMux is an implementation of an n-bit multiplexor. It will return y if the selector is 0, otherwise y.
+// The len of x and y must be the same.
+func MultiBitMux(x []uint8, y []uint8, sel uint8) []uint8 {
+	out := make([]uint8, len(x))
+	if len(x) != len(y) {
+		return out
+	}
+	for i := 0; i < len(x); i++ {
+		out[i] = Nand(Nand(x[i], Nand(sel, sel)), Nand(sel, y[i]))
+	}
+	return out
+}
